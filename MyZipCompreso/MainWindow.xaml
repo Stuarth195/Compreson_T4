@@ -5,8 +5,153 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyZipCompreso"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Universal Compressor - Tarea 4" Height="500" Width="800"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
+        Background="#1E1E1E">
 
+    <!-- Estilos básicos para Modo Oscuro -->
+    <Window.Resources>
+        <!-- Estilo general de textos -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <!-- Texto Claro -->
+        </Style>
+
+        <!-- Estilo de los GroupBox (contenedores) -->
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <!-- Título blanco -->
+            <Setter Property="BorderBrush" Value="#444444"/>
+            <!-- Borde gris sutil -->
+        </Style>
+
+        <!-- Estilo de los Botones -->
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="#3E3E42"/>
+            <!-- Fondo botón oscuro -->
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <!-- Texto botón blanco -->
+            <Setter Property="BorderBrush" Value="#555555"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1" 
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para RadioButtons -->
+        <Style TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Título -->
+            <RowDefinition Height="Auto"/>
+            <!-- Selección de Archivo -->
+            <RowDefinition Height="Auto"/>
+            <!-- Algoritmos -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botones de Acción -->
+            <RowDefinition Height="*"/>
+            <!-- Resultados y Stats -->
+        </Grid.RowDefinitions>
+
+        <!-- 1. Encabezado -->
+        <TextBlock Grid.Row="0" Text="Compresor Universal" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20" Foreground="#FFFFFF"/>
+
+        <!-- 2. Selección de Archivo -->
+        <GroupBox Grid.Row="1" Header="1. Selección de Archivo">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- TextBox oscuro -->
+                <TextBox x:Name="txtFilePath" Grid.Column="0" Height="30" VerticalContentAlignment="Center" IsReadOnly="True" Margin="0,0,10,0" 
+                         Text="Seleccione un archivo..."
+                         Background="#252526" Foreground="#CCCCCC" BorderBrush="#444444"/>
+
+                <!-- Botón -->
+                <Button x:Name="btnBrowse" Grid.Column="1" Content="Buscar Archivo..." Width="120"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- 3. Selección de Algoritmo -->
+        <GroupBox Grid.Row="2" Header="2. Algoritmo de Compresión">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <RadioButton x:Name="rbHuffman" Content="Huffman" GroupName="Algorithms" Margin="20,0" IsChecked="True"/>
+                <RadioButton x:Name="rbLZ77" Content="LZ77" GroupName="Algorithms" Margin="20,0"/>
+                <RadioButton x:Name="rbLZ78" Content="LZ78" GroupName="Algorithms" Margin="20,0"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- 4. Botones de Acción -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15">
+            <!-- Botón Comprimir: Un tono cian oscuro para destacar -->
+            <Button x:Name="btnCompress" Content="⬇ Comprimir (.myzip)" Width="180" FontWeight="Bold" Background="#006064" BorderBrush="#00838F"/>
+
+            <!-- Botón Descomprimir: Un tono naranja oscuro para destacar -->
+            <Button x:Name="btnDecompress" Content="⬆ Descomprimir" Width="180" FontWeight="Bold" Background="#E65100" BorderBrush="#EF6C00"/>
+        </StackPanel>
+
+        <!-- 5. Panel de Estadísticas -->
+        <GroupBox Grid.Row="4" Header="3. Estadísticas de la Operación">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Tiempo -->
+                <Border Grid.Column="0" Background="#2D2D30" Margin="5" CornerRadius="5" BorderBrush="#3E3E42" BorderThickness="1">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Tiempo Durado" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#B0BEC5"/>
+                        <!-- Color Celeste Brillante para resaltar sobre negro -->
+                        <TextBlock x:Name="lblTime" Text="0 ms" FontSize="18" HorizontalAlignment="Center" Foreground="#4FC3F7" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Memoria -->
+                <Border Grid.Column="1" Background="#2D2D30" Margin="5" CornerRadius="5" BorderBrush="#3E3E42" BorderThickness="1">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Memoria Usada" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#B0BEC5"/>
+                        <!-- Color Verde Brillante -->
+                        <TextBlock x:Name="lblMemory" Text="0 KB" FontSize="18" HorizontalAlignment="Center" Foreground="#81C784" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Tasa de Compresión -->
+                <Border Grid.Column="2" Background="#2D2D30" Margin="5" CornerRadius="5" BorderBrush="#3E3E42" BorderThickness="1">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Tasa de Compresión" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#B0BEC5"/>
+                        <!-- Color Rojo/Salmón Brillante -->
+                        <TextBlock x:Name="lblCompressionRate" Text="0 %" FontSize="18" HorizontalAlignment="Center" Foreground="#E57373" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>
