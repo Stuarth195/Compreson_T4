@@ -94,7 +94,7 @@
                          Background="#252526" Foreground="#CCCCCC" BorderBrush="#444444"/>
 
                 <!-- Botón -->
-                <Button x:Name="btnBrowse" Grid.Column="1" Content="Buscar Archivo..." Width="120"/>
+                <Button x:Name="btnBrowse" Grid.Column="1" Content="Buscar Archivo..." Width="120" Click="btnBrowse_Click"/>
             </Grid>
         </GroupBox>
 
@@ -110,10 +110,10 @@
         <!-- 4. Botones de Acción -->
         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15">
             <!-- Botón Comprimir: Un tono cian oscuro para destacar -->
-            <Button x:Name="btnCompress" Content="⬇ Comprimir (.myzip)" Width="180" FontWeight="Bold" Background="#006064" BorderBrush="#00838F"/>
+            <Button x:Name="btnCompress" Content="⬇ Comprimir (.myzip)" Width="180" FontWeight="Bold" Background="#006064" BorderBrush="#00838F" Click="btnCompress_Click"/>
 
             <!-- Botón Descomprimir: Un tono naranja oscuro para destacar -->
-            <Button x:Name="btnDecompress" Content="⬆ Descomprimir" Width="180" FontWeight="Bold" Background="#E65100" BorderBrush="#EF6C00"/>
+            <Button x:Name="btnDecompress" Content="⬆ Descomprimir" Width="180" FontWeight="Bold" Background="#E65100" BorderBrush="#EF6C00" Click="btnDecompress_Click"/>
         </StackPanel>
 
         <!-- 5. Panel de Estadísticas -->
