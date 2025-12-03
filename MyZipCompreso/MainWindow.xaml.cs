@@ -20,5 +20,10 @@ namespace MyZipCompreso
         {
             InitializeComponent();
         }
+
+        private void btnCompress_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
