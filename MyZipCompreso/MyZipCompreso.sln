@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36414.22 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyZipCompresor", "MyZipCompresor.csproj", "{D946B3FF-1A2B-4759-874C-B4460C6EB8E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyZipCompreso", "MyZipCompreso.csproj", "{367A7605-E443-46F0-8DA4-AB52687AD6BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D946B3FF-1A2B-4759-874C-B4460C6EB8E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D946B3FF-1A2B-4759-874C-B4460C6EB8E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D946B3FF-1A2B-4759-874C-B4460C6EB8E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D946B3FF-1A2B-4759-874C-B4460C6EB8E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{367A7605-E443-46F0-8DA4-AB52687AD6BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{367A7605-E443-46F0-8DA4-AB52687AD6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{367A7605-E443-46F0-8DA4-AB52687AD6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{367A7605-E443-46F0-8DA4-AB52687AD6BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {673C202B-82EC-4A82-8B57-1B782A6069E2}
+		SolutionGuid = {CDF32BDF-C9BE-44DB-B281-28D1346B6A54}
 	EndGlobalSection
 EndGlobal
