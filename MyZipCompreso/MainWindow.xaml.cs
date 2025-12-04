@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using MyZipCompreso.Algoritmos;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -8,13 +10,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MyZipCompreso.Algoritmos;
 
 namespace MyZipCompreso
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         string Tipo_de_compresion = "null";
@@ -28,24 +27,24 @@ namespace MyZipCompreso
             InitializeComponent();
         }
 
-        // 3. REEMPLAZA EL MÉTODO DEL BOTÓN COMPRESS (Comprimir)
+       
         private void btnCompress_Click(object sender, RoutedEventArgs e)
         {
-            // Validación: ¿Eligió algoritmo?
+            
             if (this.Tipo_de_compresion == "null")
             {
                 MessageBox.Show("Selecciona un algoritmo (LZ78).");
                 return;
             }
 
-            // Validación: ¿Usó el botón Browse antes?
+            
             if (this.archivos_seleccionados_global == null || this.archivos_seleccionados_global.Length == 0)
             {
                 MessageBox.Show("Primero selecciona archivos con el botón de Búsqueda (Browse).");
                 return;
             }
 
-            // Ahora solo preguntamos dónde guardar
+            
             Microsoft.Win32.SaveFileDialog dialogo_guardar = new Microsoft.Win32.SaveFileDialog();
             dialogo_guardar.FileName = "paquete.myzip";
             dialogo_guardar.Filter = "Archivo MyZip|*.myzip";
@@ -56,7 +55,7 @@ namespace MyZipCompreso
                 {
                     Ordena_Compresor mi_ordenador = new Ordena_Compresor();
 
-                    // Usamos la variable global que llenó el otro botón
+                    
                     mi_ordenador.Cargar_Archivos_Para_Procesar(this.archivos_seleccionados_global);
                     mi_ordenador.Ejecutar_Compresion_Y_Empaquetado(this.Tipo_de_compresion);
                     mi_ordenador.Guardar_Archivo_Final(dialogo_guardar.FileName);
@@ -87,7 +86,50 @@ namespace MyZipCompreso
 
         private void btnDecompress_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Funcionalidad de descompresión pendiente de implementar.");
+            {
+                // 1. Validaciones
+                if (this.Tipo_de_compresion == "null")
+                {
+                    MessageBox.Show("Por favor, selecciona el algoritmo (ej. LZ78).");
+                    return;
+                }
+
+                Microsoft.Win32.OpenFileDialog dialogo_abrir = new Microsoft.Win32.OpenFileDialog();
+                dialogo_abrir.Filter = "Archivo MyZip|*.myzip";
+                dialogo_abrir.Title = "Selecciona el archivo a descomprimir";
+
+                if (dialogo_abrir.ShowDialog() == true)
+                {
+                    string ruta_archivo_zip = dialogo_abrir.FileName;
+
+                    // Crear carpeta con el nombre del archivo + _EXTRAIDO
+                    string carpeta_destino = System.IO.Path.Combine(
+                        System.IO.Path.GetDirectoryName(ruta_archivo_zip),
+                        System.IO.Path.GetFileNameWithoutExtension(ruta_archivo_zip) + "_EXTRAIDO"
+                    );
+
+                    try
+                    {
+                        if (!System.IO.Directory.Exists(carpeta_destino))
+                        {
+                            System.IO.Directory.CreateDirectory(carpeta_destino);
+                        }
+
+                        // === CAMBIO AQUÍ: Usamos la nueva clase separada ===
+                        Ordena_Descompresor mi_desempaquetador = new Ordena_Descompresor();
+
+                        mi_desempaquetador.Ejecutar_Desempaquetado(ruta_archivo_zip, carpeta_destino, this.Tipo_de_compresion);
+                        // ===================================================
+
+                        MessageBox.Show($"¡Descompresión exitosa!\nArchivos en: {carpeta_destino}");
+                        System.Diagnostics.Process.Start("explorer.exe", carpeta_destino);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al descomprimir: " + ex.Message);
+                    }
+                }
+            }
         }
 
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
@@ -179,7 +221,7 @@ namespace MyZipCompreso.Algoritmos
 
         private void Ejecutar_Compresion_Y_Empaquetado_Aux(string tipo_algoritmo)
         {
-            // Validación de seguridad
+            
             if (lista_tuplas_archivos.Count == 0)
             {
                 throw new Exception("No hay archivos cargados. Usa el botón de búsqueda primero.");
@@ -187,12 +229,11 @@ namespace MyZipCompreso.Algoritmos
 
             paquete_final_formateado = "";
 
-            // Instancias de los compresores (Aquí tus compañeros instanciarán los suyos)
+            
             LZ78_Compresor compresor_lz78 = new LZ78_Compresor();
 
             List<Tuple<string, string>> lista_comprimida_temporal = new List<Tuple<string, string>>();
 
-            // 1. Fase de Compresión (Iteramos cada archivo cargado)
             foreach (Tuple<string, string> archivo_actual in lista_tuplas_archivos)
             {
                 string nombre = archivo_actual.Item1;
@@ -228,7 +269,7 @@ namespace MyZipCompreso.Algoritmos
                 lista_comprimida_temporal.Add(new Tuple<string, string>(nombre, contenido_resultado_compr));
             }
 
-            // 2. Fase de Formateo Final (Empaquetado)
+           
             foreach (Tuple<string, string> archivo_procesado in lista_comprimida_temporal)
             {
                 string nombre_final = archivo_procesado.Item1;
@@ -255,4 +296,67 @@ namespace MyZipCompreso.Algoritmos
             paquete_final_formateado = "";
         }
     }
+
+    public class Ordena_Descompresor
+    {
+        
+        public void Ejecutar_Desempaquetado(string ruta_archivo_zip, string carpeta_destino, string algoritmo_seleccionado)
+        {
+            
+            if (!System.IO.File.Exists(ruta_archivo_zip))
+                throw new Exception("El archivo .myzip no existe.");
+
+            string contenido_paquete_completo = System.IO.File.ReadAllText(ruta_archivo_zip);
+
+            // 2. Regex para separar: ||nombre||_{contenido}_
+            // Explicación: 
+            // \|\|(.*?)       -> Captura el nombre
+            // \|\|_\{(.*?)\}_ -> Captura el contenido comprimido
+            string patron_regex = @"\|\|(.*?)\|\|_\{(.*?)\}_";
+
+            MatchCollection coincidencias = Regex.Matches(contenido_paquete_completo, patron_regex, RegexOptions.Singleline);
+
+            if (coincidencias.Count == 0)
+            {
+                throw new Exception("El archivo está vacío o no tiene el formato correcto de MyZip.");
+            }
+
+            
+            LZ78_Descompresor lz78_descomp = new LZ78_Descompresor();
+
+            
+            foreach (Match match in coincidencias)
+            {
+                string nombre_original = match.Groups[1].Value;
+                string contenido_comprimido = match.Groups[2].Value;
+                string contenido_final_texto = "";
+
+                
+                if (algoritmo_seleccionado == "LZ78")
+                {
+                    lz78_descomp.LimpiarMemoria();
+                    
+                    lz78_descomp.DescomprimirDesdeCadena(contenido_comprimido);
+                    contenido_final_texto = lz78_descomp.ObtenerResultadoString();
+                }
+                else if (algoritmo_seleccionado == "LZ77")
+                {
+                    contenido_final_texto = "PENDIENTE_LZ77";
+                }
+                else if (algoritmo_seleccionado == "Huffman")
+                {
+                    contenido_final_texto = "PENDIENTE_HUFFMAN";
+                }
+                else
+                {
+                    throw new Exception("Algoritmo desconocido.");
+                }
+
+                
+                string ruta_final = System.IO.Path.Combine(carpeta_destino, nombre_original);
+                System.IO.File.WriteAllText(ruta_final, contenido_final_texto);
+            }
+        }
+    }
 }
+

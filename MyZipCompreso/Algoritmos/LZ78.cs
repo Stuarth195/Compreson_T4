@@ -127,6 +127,17 @@ namespace MyZipCompreso.Algoritmos
             LimpiarMemoria_Aux();
         }
 
+        public void DescomprimirDesdeCadena(string contenido_directo)
+        {
+            texto_descomprimido_final = Descomprimir_Aux(contenido_directo);
+        }
+
+    
+        public string ObtenerResultadoString()
+        {
+            return texto_descomprimido_final;
+        }
+
         // ---------------- MÉTODOS PRIVADOS ----------------
 
         private string Descomprimir_Aux(string contenido_completo)
