@@ -113,6 +113,28 @@ namespace MyZipCompreso.Algoritmos
 
         }
 
+
+
+        // ------------------------------------------------------------------------------------------------------------
+        // Método de serialización
+        // Convertir tokens a string
+        // ------------------------------------------------------------------------------------------------------------
+        public string ConvertirListaAString(ListaLZ77 lista)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            LZ77token[] tokens = lista.AArray();
+
+            foreach (var t in tokens)
+            {
+                string charStr = t.SiguienteChar.ToString();
+                if (t.SiguienteChar == '\0')
+                {
+                    charStr = "NULL";
+                }
+                stringBuilder.Append($"{t.Desplazamiento},{t.Largo},{charStr}|");
+            }
+            return stringBuilder.ToString();
+        }
     }
 
 }

@@ -251,8 +251,9 @@ namespace MyZipCompreso.Algoritmos
                 }
                 else if (tipo_algoritmo == "LZ77")
                 {
-               
-                    contenido_resultado_compr = "PENDIENTE_IMPLEMENTACION_LZ77";
+                    LZ77 compresor_lz77 = new LZ77();
+                    var listaTokens = compresor_lz77.Comprimir(contenido_original);
+                    contenido_resultado_compr = compresor_lz77.ConvertirListaAString(listaTokens);
                 }
                 else if (tipo_algoritmo == "Huffman")
                 {
