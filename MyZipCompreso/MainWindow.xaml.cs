@@ -104,6 +104,21 @@ namespace MyZipCompreso
                 MessageBox.Show($"Seleccionaste {archivos_seleccionados_global.Length} archivo(s).");
             }
         }
+
+        private void btnHuffman_Click(object sender, RoutedEventArgs e)
+        {
+            this.Tipo_de_compresion = this.Huffman;
+        }
+
+        private void btnLZ77_Click(object sender, RoutedEventArgs e)
+        {
+            this.Tipo_de_compresion = this.Lz77;
+        }
+
+        private void btnLZ78_Click(object sender, RoutedEventArgs e)
+        {
+            this.Tipo_de_compresion = this.Lz78;
+        }
     }
 }
 
