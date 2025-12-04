@@ -16,6 +16,11 @@ namespace MyZipCompreso
     /// </summary>
     public partial class MainWindow : Window
     {
+        string Tipo_de_compresion = "null";
+
+        string Lz78= "LZ78";
+        string Lz77= "LZ77";
+        string Huffman= "Huffman";
         public MainWindow()
         {
             InitializeComponent();
@@ -23,7 +28,24 @@ namespace MyZipCompreso
 
         private void btnCompress_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
+
+        private void rbLZ78_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Tipo_de_compresion = this.Lz78;
+        }
+
+        private void rbLZ77_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Tipo_de_compresion = this.Lz77;
+        }
+
+        private void rbHuffman_Checked(object sender, RoutedEventArgs e)
+        {
+            this.Tipo_de_compresion = this.Huffman;
+        }
+
+
     }
 }
