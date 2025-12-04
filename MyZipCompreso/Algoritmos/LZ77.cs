@@ -89,7 +89,7 @@ namespace MyZipCompreso.Algoritmos
             foreach (LZ77token token in arrayTokens)
             {
                 // Si hay desplazamiento y largo, copiamos del historial
-                if (token.Largo == 0)
+                if (token.Largo > 0)
                 {
                     int inicioCopia = salida.Length - token.Desplazamiento;
 
