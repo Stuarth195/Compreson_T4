@@ -57,6 +57,8 @@ namespace MyZipCompreso
                     System.Diagnostics.Stopwatch cronometro = new System.Diagnostics.Stopwatch();
                     cronometro.Start();
 
+                    long memoria_antes = GC.GetTotalMemory(true);
+
                     // 1. Calcular tamaño original antes de comprimir
                     long tamano_total_original = 0;
                     foreach (string ruta in this.archivos_seleccionados_global)
@@ -88,6 +90,12 @@ namespace MyZipCompreso
                     // Detener cronómetro y mostrar tiempo
                     cronometro.Stop();
                     this.lblTime.Text = cronometro.ElapsedMilliseconds + " ms";
+
+                    // Calcular y mostrar memoria usada
+                    long memoria_despues = GC.GetTotalMemory(false);
+                    long diferencia_memoria = memoria_despues - memoria_antes;
+                    if (diferencia_memoria < 0) diferencia_memoria = 0;
+                    this.lblMemory.Text = (diferencia_memoria / 1024) + " KB";
 
                     MessageBox.Show("¡Archivo comprimido guardado con éxito!");
                 }
@@ -142,6 +150,9 @@ namespace MyZipCompreso
                         System.Diagnostics.Stopwatch cronometro = new System.Diagnostics.Stopwatch();
                         cronometro.Start();
 
+                        // Medir memoria antes de empezar
+                        long memoria_antes = GC.GetTotalMemory(true);
+
                         if (!System.IO.Directory.Exists(carpeta_destino))
                         {
                             System.IO.Directory.CreateDirectory(carpeta_destino);
@@ -152,6 +163,12 @@ namespace MyZipCompreso
 
                         cronometro.Stop();
                         this.lblTime.Text = cronometro.ElapsedMilliseconds + " ms";
+
+                        // Mostrar memoria consumida
+                        long memoria_despues = GC.GetTotalMemory(false);
+                        long memoria_usada = memoria_despues - memoria_antes;
+                        if (memoria_usada < 0) memoria_usada = 0;
+                        this.lblMemory.Text = (memoria_usada / 1024) + " KB";
 
                         MessageBox.Show($"¡Descompresión exitosa!\nArchivos en: {carpeta_destino}");
                         System.Diagnostics.Process.Start("explorer.exe", carpeta_destino);
