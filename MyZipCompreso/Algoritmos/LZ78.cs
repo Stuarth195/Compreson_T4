@@ -27,6 +27,10 @@ namespace MyZipCompreso.Algoritmos
             LimpiarMemoria_Aux();
         }
 
+        public string ObtenerResultadoString()
+        {
+            return contenido_comprimido_para_guardar;
+        }
         // ---------------- MÉTODOS PRIVADOS ----------------
 
         private string Comprimir_Aux(string texto_entrada)
@@ -105,6 +109,7 @@ namespace MyZipCompreso.Algoritmos
         private string texto_descomprimido_final = "";
 
         // ---------------- MÉTODOS PÚBLICOS ----------------
+     
 
         public void Descomprimir(string ruta_archivo_origen)
         {
@@ -129,7 +134,7 @@ namespace MyZipCompreso.Algoritmos
             Dictionary<int, string> diccionario_conocimiento = new Dictionary<int, string>();
             string resultado_texto_plano = "";
 
-            // Separar Cabecera de Cuerpo
+            // Separar Cabecera de Cuerpo   
             string[] partes_archivo = contenido_completo.Split(';');
             string parte_cabecera_base = partes_archivo[0].Replace("BASE:", "");
             string parte_cuerpo_codigos = partes_archivo[1];

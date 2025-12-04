@@ -1,0 +1,5 @@
+este es un archivo de prueba para el algoritmo lz78
+este es un archivo de prueba para el algoritmo lz78
+este es un archivo de prueba para el algoritmo lz78
+hola mundo hola mundo hola mundo hola mundo
+prueba de compresion exitosa prueba de compresion exitosa
