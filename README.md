@@ -1,51 +1,44 @@
-📦 Manual de Usuario - MyZipCompreso
-Bienvenido a MyZipCompreso. Esta aplicación te permite comprimir múltiples archivos de texto en un solo paquete 
-.myzip
- y descomprimirlos posteriormente utilizando algoritmos clásicos como LZ78, LZ77 y Huffman.
+🚀 Bienvenido a MyZipCompreso
+MyZipCompreso es una aplicación para poner a prueba los algoritmos de compresión más clásicos. Básicamente puedes tomar todos los archivos de texto (txt), empaquetarlos en un solo archivo de terminación .myzip para que ocupen menos espacio, y también, recuperar el contenido original.
 
-Sigue estos pasos para probar la aplicación:
 
-🚀 Paso 1: Comprimir Archivos
-Abrir la aplicación: Ejecuta el programa MyZipCompreso.
+La aplicación te permite jugar con tres algoritmos legendarios de compresión. Tú eliges cuál usar:
+LZ78
+LZ77 
+Huffman
 
-Seleccionar Algoritmo:
-En la interfaz, verás opciones para elegir el método de compresión.
-Selecciona LZ78, LZ77 o Huffman haciendo clic en el círculo correspondiente.
+🎮 ¿Cómo se usa?
+La interfaz es súper sencilla. Aquí te explico cómo hacer la magia paso a paso:
 
-Seleccionar Archivos:
-Haz clic en el botón de Búsqueda (Browse).
-Se abrirá una ventana para buscar archivos. Puedes seleccionar uno o varios archivos de texto (.txt) al mismo tiempo (mantén presionada la tecla Ctrl para seleccionar múltiples).
-Haz clic en "Abrir". Verás un mensaje confirmando cuántos archivos seleccionaste.
+1. Para Comprimir (Guardar todo en un paquete) 📦
+Abre la App: Ejecuta MyZipCompreso.
 
-Comprimir:
-Haz clic en el botón Comprimir (Compress).
-Se abrirá una ventana para guardar el archivo.
-Elige dónde quieres guardar tu paquete y ponle un nombre (por defecto es 
-paquete.myzip
-).
-Haz clic en "Guardar".
-¡Listo! Verás un mensaje de éxito.
+Elige tu arma: Lo primero es seleccionar el algoritmo que quieres usar haciendo clic en los botones LZ78, LZ77 o Huffman.
 
-📂 Paso 2: Descomprimir Archivos
-Seleccionar el Algoritmo Correcto:
-IMPORTANTE: Antes de descomprimir, asegúrate de tener seleccionado en la interfaz el mismo algoritmo que usaste para comprimir (LZ78, LZ77 o Huffman).
+Busca tus archivos: Dale al botón "Buscar Archivo...". Se abrirá el explorador; ahí puedes seleccionar uno o varios archivos .txt.
 
-Descomprimir:
-Haz clic en el botón Descomprimir (Decompress).
-Busca y selecciona el archivo 
-.myzip
- que creaste anteriormente.
- 
-Ver Resultados:
-La aplicación creará automáticamente una carpeta nueva en la misma ubicación del archivo 
-.myzip
- con el nombre terminado en _EXTRAIDO.
- 
-Al finalizar, se abrirá automáticamente esta carpeta mostrándote tus archivos originales recuperados.
+Tip Pro: Mantén presionada la tecla Ctrl para elegir varios archivos a la vez.
 
-⚠️ Notas Importantes
-Archivos soportados: La aplicación está optimizada para archivos de texto (
-.txt
-).
+¡Comprime!: Una vez que tengas tus archivos listos, presiona el botón verde azulado "⬇ Comprimir (.myzip)".
 
-Compatibilidad: Recuerda siempre descomprimir usando la misma opción (LZ78/LZ77/Huffman) con la que comprimiste, de lo contrario el proceso podría fallar o generar texto ilegible.
+Guárdalo: Ponle nombre a tu paquete (por defecto es paquete.myzip) y guárdalo donde quieras. ¡Verás un mensaje de éxito cuando termine!
+
+2. Para Descomprimir (Recuperar tus archivos) 📂
+Aquí hay una regla de oro ✨:
+
+¡Ojo! Asegúrate de tener seleccionado en la pantalla el mismo algoritmo que usaste para comprimir. Si comprimiste con LZ77, tienes que tener seleccionado LZ77 para descomprimir.
+
+Selecciona el algoritmo: (Si no lo has hecho ya).
+
+Dale al botón naranja: Haz clic en "⬆ Descomprimir".
+
+Busca tu paquete: Encuentra el archivo .myzip que creaste antes.
+
+Listo: La aplicación creará automáticamente una carpeta nueva (terminada en _EXTRAIDO) justo donde estaba tu archivo y la abrirá para que veas tus textos recuperados al instante.
+
+⚠️ Cositas a tener en cuenta
+Solo Texto: La herramienta está optimizada para archivos de texto plano (.txt). Si intentas meter una imagen o un video, el resultado puede ser... interesante (o fallar).
+
+Compatibilidad: Recuerda la regla de oro: LZ con LZ, Huffman con Huffman. Si intentas descomprimir un archivo LZ78 usando el botón de Huffman, es muy probable que obtengas texto ilegible o un error.
+
+¡Disfruta probando la compresión!
