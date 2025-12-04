@@ -3,9 +3,11 @@ MyZipCompreso es una aplicación para poner a prueba los algoritmos de compresi�
 
 
 La aplicación te permite jugar con tres algoritmos legendarios de compresión. Tú eliges cuál usar:
-LZ78
-LZ77 
-Huffman
+  - LZ78
+
+  - LZ77
+
+  - Huffman
 
 🎮 ¿Cómo se usa?
 La interfaz es súper sencilla. Aquí te explico cómo hacer la magia paso a paso:
