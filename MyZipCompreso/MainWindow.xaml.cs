@@ -53,12 +53,35 @@ namespace MyZipCompreso
             {
                 try
                 {
+                    // 1. Calcular tamaño original antes de comprimir
+                    long tamano_total_original = 0;
+                    foreach (string ruta in this.archivos_seleccionados_global)
+                    {
+                        if (System.IO.File.Exists(ruta))
+                        {
+                            tamano_total_original += new System.IO.FileInfo(ruta).Length;
+                        }
+                    }
+
                     Ordena_Compresor mi_ordenador = new Ordena_Compresor();
 
                     
                     mi_ordenador.Cargar_Archivos_Para_Procesar(this.archivos_seleccionados_global);
                     mi_ordenador.Ejecutar_Compresion_Y_Empaquetado(this.Tipo_de_compresion);
                     mi_ordenador.Guardar_Archivo_Final(dialogo_guardar.FileName);
+
+                    // 2. Calcular tamaño final y tasa de compresión
+                    long tamano_final_comprimido = new System.IO.FileInfo(dialogo_guardar.FileName).Length;
+                    
+                    double porcentaje_ahorro = 0;
+                    if (tamano_total_original > 0)
+                    {
+                        // Fórmula: (1 - (comprimido / original)) * 100
+                        porcentaje_ahorro = (1.0 - ((double)tamano_final_comprimido / (double)tamano_total_original)) * 100.0;
+                    }
+
+                    // Mostrar en la interfaz
+                    this.lblCompressionRate.Text = porcentaje_ahorro.ToString("F2") + " %";
 
                     MessageBox.Show("¡Archivo comprimido guardado con éxito!");
                 }
