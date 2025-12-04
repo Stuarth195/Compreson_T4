@@ -14,8 +14,7 @@ namespace MyZipCompreso.Algoritmos
         private const int tamanoMax_BufferLectura = 255; // Cuántos char adelante puedo coincidir como max
 
         // ------------------------------------------------------------------------------------------------------------
-        // Método de comprimir 
-        // Toma un texto completo y lo convierte en una lista de token LZ77
+        // Método de comprimir
         // ------------------------------------------------------------------------------------------------------------
         public ListaLZ77 Comprimir(string textoEntrante)
         {
@@ -135,6 +134,45 @@ namespace MyZipCompreso.Algoritmos
             }
             return stringBuilder.ToString();
         }
+
+
+
+        // ------------------------------------------------------------------------------------------------------------
+        // Método de serialización
+        // Convertir string a tokens
+        // ------------------------------------------------------------------------------------------------------------
+        public ListaLZ77 ConvertirStringALista(string contenido)
+        {
+            ListaLZ77 lista = new ListaLZ77();
+            string[] tokensBruto = contenido.Split('|'); // Separamos con pipe |
+
+            foreach(string t in tokensBruto)
+            {
+                if (string.IsNullOrEmpty(t)) continue; // Ignora las cadenas vacías
+
+                string[] partes = t.Split(new char[] {','}, 3);
+                if(partes.Length >= 3)
+                {
+                    int desp = int.Parse(partes[0]);
+                    int largo = int.Parse(partes[1]);
+                    string charStr = partes[2];
+                    char c = '\0';
+
+                    if (charStr != "NULL" && charStr.Length > 0) // Si no es null entonces tomamos el primer caracter
+                    {
+                        c = charStr[0];
+                    }
+
+                    lista.Agregar(new LZ77token(desp, largo, c)); // Reconstruimos el token y lo agregamos a la lista
+                } 
+            }
+            return lista;
+        }
+
+
+
+
+
     }
 
 }
