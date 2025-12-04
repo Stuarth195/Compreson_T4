@@ -342,7 +342,9 @@ namespace MyZipCompreso.Algoritmos
                 }
                 else if (algoritmo_seleccionado == "LZ77")
                 {
-                    contenido_final_texto = "PENDIENTE_LZ77";
+                    LZ77 descomp_lz77 = new LZ77();
+                    var listaTokens = descomp_lz77.ConvertirStringALista(contenido_comprimido);
+                    contenido_final_texto = descomp_lz77.Descomprimir(listaTokens);
                 }
                 else if (algoritmo_seleccionado == "Huffman")
                 {
