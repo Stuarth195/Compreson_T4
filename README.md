@@ -23,7 +23,7 @@ Abre la App: Ejecuta MyZipCompreso.
 
 Tip Pro: Mantén presionada la tecla Ctrl para elegir varios archivos a la vez.
 
-  - ¡Comprime!: Una vez que tengas tus archivos listos, presiona el botón verde azulado "⬇ Comprimir (.myzip)".
+  - ¡Comprime!: Una vez que tengas tus archivos listos, presiona el botón verde azulado "Comprimir (.myzip)".
 
   - Guárdalo: Ponle nombre a tu paquete (por defecto es paquete.myzip) y guárdalo donde quieras. ¡Verás un mensaje de éxito cuando termine!
 
@@ -35,7 +35,7 @@ Aquí hay una regla de oro :
 
   - Selecciona el algoritmo: (Si no lo has hecho ya).
 
-  - Dale al botón naranja: Haz clic en "⬆ Descomprimir".
+  - Dale al botón naranja: Haz clic en "Descomprimir".
 
 -   Busca tu paquete: Encuentra el archivo .myzip que creaste antes.
 
