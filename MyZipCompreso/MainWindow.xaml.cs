@@ -53,6 +53,10 @@ namespace MyZipCompreso
             {
                 try
                 {
+                    // Iniciar medición de tiempo
+                    System.Diagnostics.Stopwatch cronometro = new System.Diagnostics.Stopwatch();
+                    cronometro.Start();
+
                     // 1. Calcular tamaño original antes de comprimir
                     long tamano_total_original = 0;
                     foreach (string ruta in this.archivos_seleccionados_global)
@@ -79,9 +83,11 @@ namespace MyZipCompreso
                         // Fórmula: (1 - (comprimido / original)) * 100
                         porcentaje_ahorro = (1.0 - ((double)tamano_final_comprimido / (double)tamano_total_original)) * 100.0;
                     }
-
-                    // Mostrar en la interfaz
                     this.lblCompressionRate.Text = porcentaje_ahorro.ToString("F2") + " %";
+
+                    // Detener cronómetro y mostrar tiempo
+                    cronometro.Stop();
+                    this.lblTime.Text = cronometro.ElapsedMilliseconds + " ms";
 
                     MessageBox.Show("¡Archivo comprimido guardado con éxito!");
                 }
@@ -133,16 +139,19 @@ namespace MyZipCompreso
 
                     try
                     {
+                        System.Diagnostics.Stopwatch cronometro = new System.Diagnostics.Stopwatch();
+                        cronometro.Start();
+
                         if (!System.IO.Directory.Exists(carpeta_destino))
                         {
                             System.IO.Directory.CreateDirectory(carpeta_destino);
                         }
-
-                        // === CAMBIO AQUÍ: Usamos la nueva clase separada ===
                         Ordena_Descompresor mi_desempaquetador = new Ordena_Descompresor();
 
                         mi_desempaquetador.Ejecutar_Desempaquetado(ruta_archivo_zip, carpeta_destino, this.Tipo_de_compresion);
-                        // ===================================================
+
+                        cronometro.Stop();
+                        this.lblTime.Text = cronometro.ElapsedMilliseconds + " ms";
 
                         MessageBox.Show($"¡Descompresión exitosa!\nArchivos en: {carpeta_destino}");
                         System.Diagnostics.Process.Start("explorer.exe", carpeta_destino);
