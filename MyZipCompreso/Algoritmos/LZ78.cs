@@ -1,7 +1,8 @@
-﻿using System;
+﻿using MyZipCompreso.Algoritmos;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 
 namespace MyZipCompreso.Algoritmos
 {
@@ -98,4 +99,101 @@ namespace MyZipCompreso.Algoritmos
             contenido_comprimido_para_guardar = "";
         }
     }
+
+    public class LZ78_Descompresor
+    {
+        private string texto_descomprimido_final = "";
+
+        // ---------------- MÉTODOS PÚBLICOS ----------------
+
+        public void Descomprimir(string ruta_archivo_origen)
+        {
+            string contenido_archivo = File.ReadAllText(ruta_archivo_origen);
+            texto_descomprimido_final = Descomprimir_Aux(contenido_archivo);
+        }
+
+        public void GuardarTextoRecuperado(string ruta_archivo_destino)
+        {
+            GuardarTextoRecuperado_Aux(ruta_archivo_destino);
+        }
+
+        public void LimpiarMemoria()
+        {
+            LimpiarMemoria_Aux();
+        }
+
+        // ---------------- MÉTODOS PRIVADOS ----------------
+
+        private string Descomprimir_Aux(string contenido_completo)
+        {
+            Dictionary<int, string> diccionario_conocimiento = new Dictionary<int, string>();
+            string resultado_texto_plano = "";
+
+            // Separar Cabecera de Cuerpo
+            string[] partes_archivo = contenido_completo.Split(';');
+            string parte_cabecera_base = partes_archivo[0].Replace("BASE:", "");
+            string parte_cuerpo_codigos = partes_archivo[1];
+
+            // 1. Reconstruir Diccionario Base
+            for (int i = 0; i < parte_cabecera_base.Length; i++)
+            {
+                string letra_base = parte_cabecera_base[i].ToString();
+                diccionario_conocimiento.Add(i + 1, letra_base);
+            }
+
+            // 2. Procesar Códigos (Flujo Natural LZ78)
+            // Quitamos el último '|' vacío si existe
+            string[] lista_pares_codigos = parte_cuerpo_codigos.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string par_codigo in lista_pares_codigos)
+            {
+                string[] datos_par = par_codigo.Split(',');
+                int indice_prefijo = int.Parse(datos_par[0]);
+                string caracter_nuevo = datos_par[1];
+
+                if (caracter_nuevo == "NULL")
+                {
+                    caracter_nuevo = "";
+                }
+
+                string cadena_prefijo_recuperada = "";
+
+                if (indice_prefijo != 0)
+                {
+                    if (diccionario_conocimiento.ContainsKey(indice_prefijo))
+                    {
+                        cadena_prefijo_recuperada = diccionario_conocimiento[indice_prefijo];
+                    }
+                }
+
+                string cadena_reconstruida = cadena_prefijo_recuperada + caracter_nuevo;
+
+                // A. Agregamos al texto final
+                resultado_texto_plano += cadena_reconstruida;
+
+                // B. Aprendemos la nueva palabra (Actualizar Diccionario)
+                int nuevo_id_diccionario = diccionario_conocimiento.Count + 1;
+                diccionario_conocimiento.Add(nuevo_id_diccionario, cadena_reconstruida);
+            }
+
+            return resultado_texto_plano;
+        }
+
+        private void GuardarTextoRecuperado_Aux(string ruta_destino)
+        {
+            if (texto_descomprimido_final != "")
+            {
+                File.WriteAllText(ruta_destino, texto_descomprimido_final);
+            }
+        }
+
+        private void LimpiarMemoria_Aux()
+        {
+            texto_descomprimido_final = "";
+        }
+    }
 }
+
+
+
+
