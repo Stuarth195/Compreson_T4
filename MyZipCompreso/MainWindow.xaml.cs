@@ -259,7 +259,9 @@ namespace MyZipCompreso.Algoritmos
                 {
                  
 
-                    contenido_resultado_compr = "PENDIENTE_IMPLEMENTACION_HUFFMAN";
+                    Huffman_Compresor compresor_huff = new Huffman_Compresor();
+                    compresor_huff.Comprimir(contenido_original);
+                    contenido_resultado_compr = compresor_huff.ObtenerResultadoString();
                 }
                 else
                 {
@@ -346,7 +348,9 @@ namespace MyZipCompreso.Algoritmos
                 }
                 else if (algoritmo_seleccionado == "Huffman")
                 {
-                    contenido_final_texto = "PENDIENTE_HUFFMAN";
+                    Huffman_Descompresor descompresor_huff = new Huffman_Descompresor();
+                    descompresor_huff.DescomprimirDesdeCadena(contenido_comprimido);
+                    contenido_final_texto = descompresor_huff.ObtenerResultadoString();
                 }
                 else
                 {

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,186 +7,234 @@ using MyZipCompreso.Modelos;
 
 namespace MyZipCompreso.Algoritmos
 {
-    public class ArbolHuffman
+    public class Nodo_Arbol_Huffman
     {
-        private List<NodoHuffman> nodos = new List<NodoHuffman>();
-        public NodoHuffman Raiz { get; set; }
-        public Dictionary<char, int> Frecuencias = new Dictionary<char, int>();
+        public char Caracter { get; set; }
+        public int Frecuencia { get; set; }
+        public Nodo_Arbol_Huffman Izquierda { get; set; }
+        public Nodo_Arbol_Huffman Derecha { get; set; }
 
-        public void Construir(string fuente)
+        public bool EsHoja()
         {
-            Frecuencias.Clear();
-            for (int i = 0; i < fuente.Length; i++)
+            return (Izquierda == null && Derecha == null);
+        }
+    }
+
+    public class Huffman_Compresor
+    {
+        private string resultado_comprimido_final = "";
+        private Dictionary<char, string> diccionario_codigos = new Dictionary<char, string>();
+        public void Comprimir(string texto_original)
+        {
+            if (string.IsNullOrEmpty(texto_original))
             {
-                if (!Frecuencias.ContainsKey(fuente[i]))
-                {
-                    Frecuencias.Add(fuente[i], 0);
-                }
-
-                Frecuencias[fuente[i]]++;
+                resultado_comprimido_final = "";
+                return;
             }
-
-            ConstruirDesdeFrecuencias(Frecuencias);
+            Dictionary<char, int> tabla_frecuencias = ObtenerFrecuencias(texto_original);
+            Nodo_Arbol_Huffman raiz_arbol = ConstruirArbol(tabla_frecuencias);
+            diccionario_codigos.Clear();
+            GenerarCodigosParaCadaLetra(raiz_arbol, "");
+            StringBuilder cadena_bits = new StringBuilder();
+            foreach (char letra in texto_original)
+            {
+                cadena_bits.Append(diccionario_codigos[letra]);
+            }
+            resultado_comprimido_final = FormatearSalida(tabla_frecuencias, cadena_bits.ToString());
         }
 
-        public void ConstruirDesdeFrecuencias(Dictionary<char, int> frecuencias)
+        public string ObtenerResultadoString()
         {
-            Frecuencias = frecuencias;
-            nodos.Clear();
-
-            foreach (KeyValuePair<char, int> simbolo in Frecuencias)
-            {
-                nodos.Add(new NodoHuffman() { Simbolo = simbolo.Key, Frecuencia = simbolo.Value });
-            }
-
-            while (nodos.Count > 1)
-            {
-                List<NodoHuffman> nodosOrdenados = nodos.OrderBy(nodo => nodo.Frecuencia).ToList<NodoHuffman>();
-
-                if (nodosOrdenados.Count >= 2)
-                {
-                    // Tomar los dos primeros elementos
-                    List<NodoHuffman> tomados = nodosOrdenados.Take(2).ToList<NodoHuffman>();
-
-                    // Crear un nodo padre combinando las frecuencias
-                    NodoHuffman padre = new NodoHuffman()
-                    {
-                        Simbolo = '*',
-                        Frecuencia = tomados[0].Frecuencia + tomados[1].Frecuencia,
-                        Izquierdo = tomados[0],
-                        Derecho = tomados[1]
-                    };
-
-                    nodos.Remove(tomados[0]);
-                    nodos.Remove(tomados[1]);
-                    nodos.Add(padre);
-                }
-
-                this.Raiz = nodos.FirstOrDefault();
-            }
+            return resultado_comprimido_final;
         }
 
-        public BitArray Codificar(string fuente)
+        //MÉTODOS PRIVADOS
+
+        private Dictionary<char, int> ObtenerFrecuencias(string texto)
         {
-            List<bool> fuenteCodificada = new List<bool>();
-
-            for (int i = 0; i < fuente.Length; i++)
+            Dictionary<char, int> conteo = new Dictionary<char, int>();
+            foreach (char c in texto)
             {
-                List<bool> simboloCodificado = this.Raiz.Recorrer(fuente[i], new List<bool>());
-                if (simboloCodificado != null)
+                if (conteo.ContainsKey(c))
                 {
-                    fuenteCodificada.AddRange(simboloCodificado);
-                }
-            }
-
-            BitArray bits = new BitArray(fuenteCodificada.ToArray());
-
-            return bits;
-        }
-
-        public string Decodificar(BitArray bits)
-        {
-            NodoHuffman actual = this.Raiz;
-            string decodificado = "";
-
-            foreach (bool bit in bits)
-            {
-                if (bit)
-                {
-                    if (actual.Derecho != null)
-                    {
-                        actual = actual.Derecho;
-                    }
+                    conteo[c]++;
                 }
                 else
                 {
-                    if (actual.Izquierdo != null)
-                    {
-                        actual = actual.Izquierdo;
-                    }
-                }
-
-                if (EsHoja(actual))
-                {
-                    decodificado += actual.Simbolo;
-                    actual = this.Raiz;
+                    conteo.Add(c, 1);
                 }
             }
-
-            return decodificado;
+            return conteo;
         }
 
-        public bool EsHoja(NodoHuffman nodo)
+        private Nodo_Arbol_Huffman ConstruirArbol(Dictionary<char, int> frecuencias)
         {
-            return (nodo.Izquierdo == null && nodo.Derecho == null);
-        }
-    }
+            List<Nodo_Arbol_Huffman> lista_nodos = new List<Nodo_Arbol_Huffman>();
 
-    public class Huffman_C
-    {
-        public ArbolHuffman Arbol { get; private set; }
-
-        public Huffman_C()
-        {
-            Arbol = new ArbolHuffman();
-        }
-
-        public void ComprimirADisco(string rutaEntrada, string rutaSalida)
-        {
-            string contenido = File.ReadAllText(rutaEntrada);
-            Arbol.Construir(contenido);
-            BitArray codificado = Arbol.Codificar(contenido);
-
-            using (FileStream fs = new FileStream(rutaSalida, FileMode.Create))
-            using (BinaryWriter escritor = new BinaryWriter(fs))
+            foreach (var item in frecuencias)
             {
-                escritor.Write(Arbol.Frecuencias.Count);
-                foreach (var item in Arbol.Frecuencias)
-                {
-                    escritor.Write(item.Key);
-                    escritor.Write(item.Value);
-                }
-                escritor.Write(codificado.Length);
-                byte[] bytes = new byte[(codificado.Length + 7) / 8];
-                codificado.CopyTo(bytes, 0);
-                escritor.Write(bytes);
+                lista_nodos.Add(new Nodo_Arbol_Huffman() { Caracter = item.Key, Frecuencia = item.Value });
             }
+            while (lista_nodos.Count > 1)
+            {
+                lista_nodos = lista_nodos.OrderBy(n => n.Frecuencia).ToList();
+                Nodo_Arbol_Huffman izquierdo = lista_nodos[0];
+                Nodo_Arbol_Huffman derecho = lista_nodos[1];
+                Nodo_Arbol_Huffman padre = new Nodo_Arbol_Huffman()
+                {
+                    Caracter = '*',
+                    Frecuencia = izquierdo.Frecuencia + derecho.Frecuencia,
+                    Izquierda = izquierdo,
+                    Derecha = derecho
+                };
+                lista_nodos.Remove(izquierdo);
+                lista_nodos.Remove(derecho);
+                lista_nodos.Add(padre);
+            }
+            return lista_nodos.FirstOrDefault();
+        }
+
+        private void GenerarCodigosParaCadaLetra(Nodo_Arbol_Huffman nodo_actual, string codigo_actual)
+        {
+            if (nodo_actual == null) return;
+            if (nodo_actual.EsHoja())
+            {
+                diccionario_codigos.Add(nodo_actual.Caracter, codigo_actual);
+                return;
+            }
+            GenerarCodigosParaCadaLetra(nodo_actual.Izquierda, codigo_actual + "0");
+            GenerarCodigosParaCadaLetra(nodo_actual.Derecha, codigo_actual + "1");
+        }
+
+        private string FormatearSalida(Dictionary<char, int> frecuencias, string bits)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("TABLA:");
+            foreach (var item in frecuencias)
+            {
+                sb.Append((int)item.Key + "-" + item.Value + ",");
+            }
+            if (sb.Length > 0 && sb[sb.Length - 1] == ',')
+            {
+                sb.Remove(sb.Length - 1, 1);
+            }
+            sb.Append(";BITS:");
+            sb.Append(bits);
+            return sb.ToString();
         }
     }
 
-    public class Huffman_Dc
+    public class Huffman_Descompresor
     {
-        public void DescomprimirDesdeDisco(string rutaEntrada, string rutaSalida)
+        private string texto_recuperado = "";
+
+        //MÉTODOS PÚBLICOS
+
+        public void DescomprimirDesdeCadena(string contenido_comprimido)
         {
-            ArbolHuffman arbol = new ArbolHuffman();
+            if (string.IsNullOrEmpty(contenido_comprimido))
+            {
+                texto_recuperado = "";
+                return;
+            }
+            string[] partes_principales = contenido_comprimido.Split(new string[] { ";BITS:" }, StringSplitOptions.None);
+            
+            if (partes_principales.Length < 2)
+            {
+                texto_recuperado = "ERROR_FORMATO";
+                return;
+            }
+
+            string parte_tabla = partes_principales[0].Replace("TABLA:", "");
+            string parte_bits = partes_principales[1];
+            Dictionary<char, int> tabla_frecuencias = ReconstruirTabla(parte_tabla);
+            Nodo_Arbol_Huffman raiz = ConstruirArbol(tabla_frecuencias);
+            texto_recuperado = DecodificarBits(raiz, parte_bits);
+        }
+
+        public string ObtenerResultadoString()
+        {
+            return texto_recuperado;
+        }
+
+        private Dictionary<char, int> ReconstruirTabla(string cadena_tabla)
+        {
             Dictionary<char, int> frecuencias = new Dictionary<char, int>();
-            BitArray bits;
+            string[] pares = cadena_tabla.Split(',');
 
-            using (FileStream fs = new FileStream(rutaEntrada, FileMode.Open))
-            using (BinaryReader lector = new BinaryReader(fs))
+            foreach (string par in pares)
             {
-                int cantidad = lector.ReadInt32();
-                for (int i = 0; i < cantidad; i++)
+                if (string.IsNullOrEmpty(par)) continue;
+
+                string[] datos = par.Split('-');
+                if (datos.Length == 2)
                 {
-                    char simbolo = lector.ReadChar();
-                    int frecuencia = lector.ReadInt32();
-                    frecuencias.Add(simbolo, frecuencia);
+                    int valor_char = int.Parse(datos[0]);
+                    int valor_frec = int.Parse(datos[1]);
+                    
+                    frecuencias.Add((char)valor_char, valor_frec);
                 }
-                arbol.ConstruirDesdeFrecuencias(frecuencias);
-                int cantidadBits = lector.ReadInt32();
-                int cantidadBytes = (cantidadBits + 7) / 8;
-                byte[] bytes = lector.ReadBytes(cantidadBytes);
-                bits = new BitArray(bytes);
-                BitArray bitsExactos = new BitArray(cantidadBits);
-                for(int i = 0; i < cantidadBits; i++)
-                {
-                    bitsExactos[i] = bits[i];
-                }
-                bits = bitsExactos;
             }
 
-            string decodificado = arbol.Decodificar(bits);
-            File.WriteAllText(rutaSalida, decodificado);
+            return frecuencias;
+        }
+
+        // Este método es idéntico al del compresor, es para tener el mismo árbol
+        private Nodo_Arbol_Huffman ConstruirArbol(Dictionary<char, int> frecuencias)
+        {
+            List<Nodo_Arbol_Huffman> lista_nodos = new List<Nodo_Arbol_Huffman>();
+
+            foreach (var item in frecuencias)
+            {
+                lista_nodos.Add(new Nodo_Arbol_Huffman() { Caracter = item.Key, Frecuencia = item.Value });
+            }
+
+            while (lista_nodos.Count > 1)
+            {
+                lista_nodos = lista_nodos.OrderBy(n => n.Frecuencia).ToList();
+
+                Nodo_Arbol_Huffman izquierdo = lista_nodos[0];
+                Nodo_Arbol_Huffman derecho = lista_nodos[1];
+
+                Nodo_Arbol_Huffman padre = new Nodo_Arbol_Huffman()
+                {
+                    Caracter = '*',
+                    Frecuencia = izquierdo.Frecuencia + derecho.Frecuencia,
+                    Izquierda = izquierdo,
+                    Derecha = derecho
+                };
+
+                lista_nodos.Remove(izquierdo);
+                lista_nodos.Remove(derecho);
+                lista_nodos.Add(padre);
+            }
+
+            return lista_nodos.FirstOrDefault();
+        }
+
+        private string DecodificarBits(Nodo_Arbol_Huffman raiz, string bits)
+        {
+            StringBuilder resultado = new StringBuilder();
+            Nodo_Arbol_Huffman nodo_actual = raiz;
+
+            foreach (char bit in bits)
+            {
+                if (bit == '0')
+                {
+                    nodo_actual = nodo_actual.Izquierda;
+                }
+                else if (bit == '1')
+                {
+                    nodo_actual = nodo_actual.Derecha;
+                }
+                if (nodo_actual.EsHoja())
+                {
+                    resultado.Append(nodo_actual.Caracter);
+                    nodo_actual = raiz;
+                }
+            }
+
+            return resultado.ToString();
         }
     }
 }
